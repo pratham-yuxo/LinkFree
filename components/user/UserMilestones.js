@@ -2,9 +2,36 @@ import UserMilestone from "./UserMilestone";
 import Alert from "@components/Alert";
 
 export default function UserMilestones({ data }) {
-  const historicMilestones = data.milestones.filter(
+  let historicMilestones = data.milestones.filter(
     (milestone) => !milestone.isGoal
   );
+  console.log("before");
+  console.log(historicMilestones);
+  historicMilestones.sort((a, b) => {
+    // Split the date string into its month and year parts
+    const aDateParts = a.date.split(" ");
+    const bDateParts = b.date.split(" ");
+
+    const aMonth = aDateParts.length > 1 ? aDateParts[0] : "January";
+    const bMonth = bDateParts.length > 1 ? bDateParts[0] : "January";
+    const aYear = parseInt(aDateParts[aDateParts.length - 1]);
+    const bYear = parseInt(bDateParts[bDateParts.length - 1]);
+
+    // Create valid date objects for each milestone, using the month and year values
+    const aDateObj = new Date(`${aMonth} 1, ${aYear}`);
+    const bDateObj = new Date(`${bMonth} 1, ${bYear}`);
+
+    // Compare the two date objects to determine their chronological order
+    if (aDateObj > bDateObj) {
+      return -1;
+    } else if (aDateObj < bDateObj) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  console.log("after");
+  console.log(historicMilestones);
 
   const futureMilestones = data.milestones.filter(
     (milestone) => milestone.isGoal
